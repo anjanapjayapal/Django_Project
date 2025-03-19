@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.content }}</p>
+    <p class="text-muted">By {{ post.author.username }} | {{ post.created_at }}</p>
+
+    <!-- Comments Section -->
+    <h4>Comments</h4>
+    <ul class="list-group">
+        {% for comment in comments %}
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div>
+                    <strong>{{ comment.author.username }}</strong>: {{ comment.content }}
+                    <br>
+                    <small class="text-muted">{{ comment.created_at }}</small>
+                </div>
+                {% if comment.author == user %}
+                    <div>
+                        <a href="{% url 'webapp:edit_comment' comment.id %}" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="{% url 'webapp:delete_comment' comment.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    </div>
+                {% endif %}
+            </li>
+        {% empty %}
+            <p>No comments yet. Be the first to comment!</p>
+        {% endfor %}
+    </ul>
+
+    <!-- Add Comment Form -->
+    {% if user.is_authenticated %}
+        <h4 class="mt-4">Add a Comment</h4>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+        </form>
+    {% else %}
+        <p><a href="{% url 'webapp:login' %}">Login</a> to add a comment.</p>
+    {% endif %}
+
+    <a href="{% url 'webapp:blog_list' %}" class="btn btn-secondary mt-3">Back to Blogs</a>
+</div>
+{% endblock %}

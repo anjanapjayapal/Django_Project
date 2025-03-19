@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>My Profile</h2>
+    <div class="card p-4">
+        {% if user.profile %}
+        <h4>{{ user.first_name }} {{ user.last_name }}</h4>
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+
+
+            <p><strong>Contact:</strong> {{ user.profile.contact_number|default:"Not Available" }}</p>
+            {% if user.profile.profile_pic %}
+                <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture" class="img-thumbnail" width="150">
+            {% else %}
+                <img src="/media/profile_pics/default.jpg" alt="Default Profile Pic" class="img-thumbnail" width="150">
+            {% endif %}
+        {% else %}
+            <p><strong>Contact:</strong> Not available</p>
+            <img src="/media/profile_pics/default.jpg" alt="Default Profile Pic" class="img-thumbnail" width="150">
+        {% endif %}
+
+        <br><br>
+        <a href="{% url 'webapp:update_profile' %}" class="btn btn-warning">Update Profile</a>
+    </div>
+
+    <!-- User Blogs Section -->
+    <h3 class="mt-5">My Blog Posts</h3>
+    {% if blogs %}
+        <ul class="list-group">
+            {% for post in blogs %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                    <small class="text-muted">{{ post.created_at|date:"F d, Y" }}</small>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No blog posts created yet.</p>
+    {% endif %}
+
+    <!-- User Images Section -->
+    <h3 class="mt-5">My Shared Images</h3>
+    <div class="row">
+        {% for image in images %}
+            <div class="col-md-3">
+                <div class="card my-3">
+                    <img src="{{ image.image.url }}" class="card-img-top" alt="Shared Image">
+                    <div class="card-body text-center">
+                        <p class="text-muted">{{ image.caption|default:"No Caption" }}</p>
+                        <p class="small">Uploaded on {{ image.uploaded_at|date:"F d, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No images shared yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

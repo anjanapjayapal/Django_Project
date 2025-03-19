@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Upload an Image</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+
+    <a href="{% url 'webapp:image_gallery' %}" class="btn btn-secondary mt-3">Back to Gallery</a>
+</div>
+{% endblock %}

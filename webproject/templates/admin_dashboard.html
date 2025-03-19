@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2 class="my-4 text-center">Admin Dashboard</h2>
+
+    <!-- 🔹 Summary Cards -->
+    <div class="row text-center mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white p-3">
+                <h4>Total Users</h4>
+                <p class="display-5">{{ users.count }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white p-3">
+                <h4>Total Blog Posts</h4>
+                <p class="display-5">{{ posts.count }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-warning text-white p-3">
+                <h4>Total Shared Images</h4>
+                <p class="display-5">{{ images.count }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔹 Users List -->
+    <h3 class="mt-5">All Users</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="bg-dark text-white">
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr {% if not user.is_active %} class="table-danger" {% endif %}>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if user.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-danger">Blocked</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.is_active %}
+                                <a href="{% url 'webapp:block_user' user.id %}" class="btn btn-warning btn-sm">Block</a>
+                            {% endif %}
+                            <a href="{% url 'webapp:delete_user' user.id %}" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 🔹 Blog Posts List -->
+    <h3 class="mt-5">All Blog Posts</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="bg-dark text-white">
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in posts %}
+                    <tr>
+                        <td>{{ post.title }}</td>
+                        <td>{{ post.author.username }}</td>
+                        <td>{{ post.created_at|date:"F d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'webapp:delete_post' post.id %}" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 🔹 Shared Images List -->
+    <h3 class="mt-5">All Shared Images</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="bg-dark text-white">
+                <tr>
+                    <th>User</th>
+                    <th>Uploaded At</th>
+                    <th>Image</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for image in images %}
+                    <tr>
+                        <td>{{ image.user.username }}</td>
+                        <td>{{ image.uploaded_at|date:"F d, Y" }}</td>
+                        <td>
+                            <img src="{{ image.image.url }}" alt="Shared Image" width="100">
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Home | Blog & Image Sharing{% endblock %}
+
+{% block content %}
+    <!-- 🔹 Hero Section -->
+    <div class="banner text-center my-4">
+        <h1 class="display-4">Welcome to Blog & Image Sharing</h1>
+        <p class="lead">A platform to share your thoughts, stories, and images with the world.</p>
+    </div>
+
+    <!-- 🔹 About the Website -->
+    <div class="container text-center my-5">
+        <h2>About Our Platform</h2>
+        <p class="text-muted">
+            Blog & Image Sharing is an online platform where you can share your ideas, express your thoughts,
+            and showcase your photography. Connect with like-minded people, gain followers, and explore a world of creativity.
+        </p>
+    </div>
+
+    <!-- 🔹 Blog Posts Section -->
+    <div class="container my-5">
+        <h2 class="text-center">Latest Blog Posts</h2>
+        <div class="row">
+            {% for post in posts %}
+                <div class="col-md-4">
+                    <div class="card blog-card my-3">
+                        <img src="{{ post.image.url }}" class="card-img-top" alt="Post Image">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post.title }}</h5>
+                            <p class="card-text">{{ post.content|truncatewords:20 }}</p>
+                            <a href="{% url 'webapp:blog_detail' post.id %}" class="btn btn-primary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center">No posts available.
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'webapp:create_blog' %}">Create a new post</a>
+                    {% else %}
+                        <a href="{% url 'webapp:login' %}?next={% url 'webapp:create_blog' %}">Login to create a post</a>
+                    {% endif %}
+                </p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 🔹 Image Sharing Gallery -->
+    <div class="container my-5">
+        <h2 class="text-center">Latest Shared Images</h2>
+        <div class="row">
+            {% for image in images %}
+                <div class="col-md-3">
+                    <div class="card my-3">
+                        <img src="{{ image.image.url }}" class="card-img-top" alt="Shared Image">
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center">No images shared yet.
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'webapp:upload_image' %}">Upload an image</a>
+                    {% else %}
+                        <a href="{% url 'webapp:login' %}?next={% url 'webapp:upload_image' %}">Login to upload an image</a>
+                    {% endif %}
+                </p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

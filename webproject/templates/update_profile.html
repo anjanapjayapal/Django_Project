@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Update Profile</h2>
+
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <strong>Oops! Something went wrong:</strong>
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field|title }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- ✅ User Details -->
+        <div class="mb-3">
+            <label>Username</label>
+            {{ form.username }}
+        </div>
+        <div class="mb-3">
+            <label>First Name</label>
+            {{ form.first_name }}
+        </div>
+        <div class="mb-3">
+            <label>Last Name</label>
+            {{ form.last_name }}
+        </div>
+        <div class="mb-3">
+            <label>Email</label>
+            {{ form.email }}
+        </div>
+
+        <!-- ✅ Profile Details -->
+        <div class="mb-3">
+            <label>Contact Number</label>
+            {{ form.contact_number }}
+        </div>
+        <div class="mb-3">
+            <label>Profile Picture</label><br>
+            {% if user.profile.profile_pic %}
+                <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture" class="img-thumbnail" width="150"><br>
+            {% endif %}
+            {{ form.profile_pic }}
+        </div>
+
+        <button type="submit" class="btn btn-success">Save Changes</button>
+    </form>
+
+    <a href="{% url 'webapp:view_profile' %}" class="btn btn-secondary mt-3">Cancel</a>
+</div>
+{% endblock %}
